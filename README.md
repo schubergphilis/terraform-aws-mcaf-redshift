@@ -1,1 +1,1 @@
-# mcaf-terraform-aws-redshift
+# terraform-aws-mcaf-redshift
