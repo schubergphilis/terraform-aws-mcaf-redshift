@@ -4,16 +4,16 @@ locals {
   vpc_id     = data.aws_subnet.selected.vpc_id
 }
 
-data "aws_subnet" "selected" {
+data aws_subnet selected {
   id = local.subnet_ids[0]
 }
 
-resource "aws_eip" "redshift" {
+resource aws_eip redshift {
   vpc  = true
   tags = merge(var.tags, map("Name", "${var.stack}-redshift"))
 }
 
-resource "aws_security_group" "default" {
+resource aws_security_group default {
   name        = "${var.stack}-redshift"
   description = "Access to Redshift"
   vpc_id      = local.vpc_id
@@ -41,13 +41,13 @@ resource "aws_security_group" "default" {
   }
 }
 
-resource "aws_redshift_subnet_group" "default" {
+resource aws_redshift_subnet_group default {
   name       = var.stack
   subnet_ids = local.subnet_ids
   tags       = var.tags
 }
 
-resource "aws_redshift_parameter_group" "default" {
+resource aws_redshift_parameter_group default {
   name        = var.stack
   description = "Hardened security for Redshift Clusters"
   family      = "redshift-1.0"
@@ -63,7 +63,7 @@ resource "aws_redshift_parameter_group" "default" {
   }
 }
 
-resource "aws_s3_bucket" "logging" {
+resource aws_s3_bucket logging {
   count         = var.logging ? 1 : 0
   bucket        = local.bucket
   policy        = data.aws_iam_policy_document.logging.json
@@ -79,9 +79,9 @@ resource "aws_s3_bucket" "logging" {
     }
   }
 }
-data "aws_redshift_service_account" "main" {}
+data aws_redshift_service_account main {}
 
-data "aws_iam_policy_document" "logging" {
+data aws_iam_policy_document logging {
   statement {
     sid       = "Put bucket policy needed for Redshift audit logging"
     actions   = ["s3:PutObject"]
@@ -103,7 +103,7 @@ data "aws_iam_policy_document" "logging" {
   }
 }
 
-resource "aws_redshift_cluster" "default" {
+resource aws_redshift_cluster default {
   cluster_identifier                  = var.stack
   database_name                       = var.database
   master_username                     = var.username
