@@ -65,18 +65,6 @@ variable "logging" {
   description = "Enables logging information such as queries and connection attempts"
 }
 
-variable "kms_key_id" {
-  type        = string
-  default     = ""
-  description = "The AWS KMS key ID used for the `SSE-KMS` encryption"
-}
-
-variable "sse_algorithm" {
-  type        = string
-  default     = "aws:kms"
-  description = "The server-side encryption algorithm to use, defaults to `aws:kms`"
-}
-
 variable "force_destroy" {
   type        = bool
   default     = false

@@ -1,5 +1,5 @@
 locals {
-  bucket     = "${var.stack}-logging"
+  bucket     = "${var.stack}-redshift"
   subnet_ids = length(var.subnet_ids) > 0 ? var.subnet_ids : aws_subnet.public[*].id
   vpc_id     = data.aws_subnet.selected.vpc_id
 }
@@ -62,26 +62,39 @@ resource "aws_redshift_parameter_group" "default" {
 resource "aws_s3_bucket" "logging" {
   count         = var.logging ? 1 : 0
   bucket        = local.bucket
-  policy        = data.aws_iam_policy_document.logging.json
   force_destroy = var.force_destroy
+  policy        = data.aws_iam_policy_document.logging.json
   tags          = var.tags
 
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
-        kms_master_key_id = var.kms_key_id
-        sse_algorithm     = var.sse_algorithm
+        sse_algorithm = "AES256"
       }
     }
   }
 }
+
+resource "aws_s3_bucket_public_access_block" "default" {
+  count                   = var.logging ? 1 : 0
+  bucket                  = aws_s3_bucket.logging[0].id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
 data "aws_redshift_service_account" "main" {}
 
 data "aws_iam_policy_document" "logging" {
   statement {
-    sid       = "Put bucket policy needed for Redshift audit logging"
-    actions   = ["s3:PutObject"]
-    resources = ["arn:aws:s3:::${local.bucket}/*"]
+    sid = "Put bucket policy needed for Redshift audit logging"
+    actions = [
+      "s3:PutObject"
+    ]
+    resources = [
+      "arn:aws:s3:::${local.bucket}/*"
+    ]
     principals {
       type        = "AWS"
       identifiers = [data.aws_redshift_service_account.main.arn]
@@ -89,9 +102,13 @@ data "aws_iam_policy_document" "logging" {
   }
 
   statement {
-    sid       = "Get ACL bucket policy needed for Redshift audit logging"
-    actions   = ["s3:GetBucketAcl"]
-    resources = ["arn:aws:s3:::${local.bucket}"]
+    sid = "Get ACL bucket policy needed for Redshift audit logging"
+    actions = [
+      "s3:GetBucketAcl"
+    ]
+    resources = [
+      "arn:aws:s3:::${local.bucket}"
+    ]
     principals {
       type        = "AWS"
       identifiers = [data.aws_redshift_service_account.main.arn]
