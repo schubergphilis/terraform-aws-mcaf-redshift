@@ -28,6 +28,14 @@ resource "aws_security_group" "default" {
     self        = true
   }
 
+  ingress {
+    description = "All inbound traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     description = "All outbound traffic"
     from_port   = 0
