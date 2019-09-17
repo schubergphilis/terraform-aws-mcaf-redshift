@@ -18,10 +18,15 @@ variable "password" {
   description = "Password for the master DB user"
 }
 
-variable "node_type" {
-  type        = string
-  default     = "dc2.large"
-  description = "The node type to be provisioned for the cluster"
+variable "availability_zones" {
+  type        = list(string)
+  default     = []
+  description = "List of availability zones to deploy Redshift in"
+}
+
+variable "cidr_blocks" {
+  type        = list(string)
+  description = "List of CIDR blocks that should be allowed access to the Redshift cluster"
 }
 
 variable "cluster_type" {
@@ -30,39 +35,10 @@ variable "cluster_type" {
   description = "The cluster type to use (either `single-node` or `multi-node`)"
 }
 
-variable "number_of_nodes" {
-  type        = number
-  default     = 1
-  description = "The number of compute nodes in the cluster"
-}
-
-variable "iam_roles" {
-  type        = list(string)
-  default     = []
-  description = "A list of IAM Role ARNs to associate with the cluster"
-}
-
-variable "cidr_blocks" {
-  type        = list(string)
-  description = "List of CIDR blocks that should be allowed access to the Redshift cluster"
-}
-
-variable "availability_zones" {
-  type        = list(string)
-  default     = []
-  description = "List of availability zones to deploy Redshift in"
-}
-
-variable "subnet_ids" {
-  type        = list(string)
-  default     = []
-  description = "List of subnet IDs to deploy Redshift in"
-}
-
-variable "logging" {
-  type        = bool
-  default     = true
-  description = "Enables logging information such as queries and connection attempts"
+variable "final_snapshot_identifier" {
+  type        = string
+  default     = "none"
+  description = "Identifier of the final snapshot to create before deleting the cluster"
 }
 
 variable "force_destroy" {
@@ -71,16 +47,46 @@ variable "force_destroy" {
   description = "A boolean that indicates all logging should be deleted when deleting the cluster"
 }
 
+variable "logging" {
+  type        = bool
+  default     = true
+  description = "Enables logging information such as queries and connection attempts"
+}
+
+variable "iam_roles" {
+  type        = list(string)
+  default     = []
+  description = "A list of IAM Role ARNs to associate with the cluster"
+}
+
+variable "node_type" {
+  type        = string
+  default     = "dc2.large"
+  description = "The node type to be provisioned for the cluster"
+}
+
+variable "number_of_nodes" {
+  type        = number
+  default     = 1
+  description = "The number of compute nodes in the cluster"
+}
+
+variable "publicly_accessible" {
+  type        = bool
+  default     = false
+  description = "Whether or not the Redshift cluster will be publicly accessible"
+}
+
 variable "skip_final_snapshot" {
   type        = bool
   default     = false
   description = "Determines whether a final snapshot is created before deleting the cluster"
 }
 
-variable "final_snapshot_identifier" {
-  type        = string
-  default     = "none"
-  description = "Identifier of the final snapshot to create before deleting the cluster"
+variable "subnet_ids" {
+  type        = list(string)
+  default     = []
+  description = "List of subnet IDs to deploy Redshift in"
 }
 
 variable "tags" {

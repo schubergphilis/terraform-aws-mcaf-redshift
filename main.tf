@@ -1,5 +1,6 @@
 locals {
   bucket     = "${var.stack}-redshift"
+  elastic_ip = var.publicly_accessible ? aws_eip.default[0].public_ip : null
   subnet_ids = length(var.subnet_ids) > 0 ? var.subnet_ids : aws_subnet.public[*].id
   vpc_id     = data.aws_subnet.selected.vpc_id
 }
@@ -8,9 +9,10 @@ data "aws_subnet" "selected" {
   id = local.subnet_ids[0]
 }
 
-resource "aws_eip" "redshift" {
-  vpc  = true
-  tags = merge(var.tags, map("Name", "${var.stack}-redshift"))
+resource "aws_eip" "default" {
+  count = var.publicly_accessible ? 1 : 0
+  vpc   = true
+  tags  = merge(var.tags, map("Name", "${var.stack}-redshift"))
 }
 
 resource "aws_security_group" "default" {
@@ -129,19 +131,19 @@ resource "aws_redshift_cluster" "default" {
   database_name                       = var.database
   master_username                     = var.username
   master_password                     = var.password
-  node_type                           = var.node_type
-  cluster_type                        = var.cluster_type
-  number_of_nodes                     = var.number_of_nodes
   allow_version_upgrade               = true
   automated_snapshot_retention_period = 1
   cluster_parameter_group_name        = aws_redshift_parameter_group.default.name
   cluster_subnet_group_name           = aws_redshift_subnet_group.default.name
-  iam_roles                           = var.iam_roles
-  elastic_ip                          = aws_eip.redshift.public_ip
-  skip_final_snapshot                 = var.skip_final_snapshot
-  final_snapshot_identifier           = var.final_snapshot_identifier
+  cluster_type                        = var.cluster_type
+  elastic_ip                          = local.elastic_ip
   encrypted                           = true
-  publicly_accessible                 = true
+  final_snapshot_identifier           = var.final_snapshot_identifier
+  iam_roles                           = var.iam_roles
+  node_type                           = var.node_type
+  number_of_nodes                     = var.number_of_nodes
+  publicly_accessible                 = var.publicly_accessible
+  skip_final_snapshot                 = var.skip_final_snapshot
   vpc_security_group_ids              = [aws_security_group.default.id]
   tags                                = var.tags
 
