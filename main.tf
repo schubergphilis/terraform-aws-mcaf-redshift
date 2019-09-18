@@ -27,7 +27,6 @@ resource "aws_security_group" "default" {
     to_port     = 5439
     protocol    = "tcp"
     cidr_blocks = var.cidr_blocks
-    self        = true
   }
 
   ingress {
