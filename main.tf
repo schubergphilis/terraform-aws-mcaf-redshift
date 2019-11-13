@@ -56,6 +56,7 @@ resource "aws_redshift_parameter_group" "default" {
   name        = var.stack
   description = "Hardened security for Redshift Clusters"
   family      = "redshift-1.0"
+  tags        = var.tags
 
   parameter {
     name  = "enable_user_activity_logging"
