@@ -1,5 +1,6 @@
 locals {
-  elastic_ip = var.publicly_accessible ? aws_eip.default[0].public_ip : null
+  elastic_ip          = var.publicly_accessible ? aws_eip.default[0].public_ip : null
+  create_subnet_group = var.create_subnet_group != null ? var.create_subnet_group : false
 }
 
 resource "aws_eip" "default" {
@@ -40,6 +41,7 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_redshift_subnet_group" "default" {
+  count      = local.create_subnet_group ? 1 : 0
   name       = "redshift-subnet-group-${var.name}"
   subnet_ids = var.subnet_ids
   tags       = var.tags
@@ -127,7 +129,7 @@ resource "aws_redshift_cluster" "default" {
   allow_version_upgrade               = true
   automated_snapshot_retention_period = 1
   cluster_parameter_group_name        = aws_redshift_parameter_group.default.name
-  cluster_subnet_group_name           = aws_redshift_subnet_group.default.name
+  cluster_subnet_group_name           = local.subnet_group_name
   cluster_type                        = var.cluster_type
   elastic_ip                          = local.elastic_ip
   encrypted                           = true

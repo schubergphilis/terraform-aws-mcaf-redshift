@@ -35,6 +35,12 @@ variable "cluster_type" {
   description = "The cluster type to use (either `single-node` or `multi-node`)"
 }
 
+variable "create_subnet_group" {
+  type        = bool
+  default     = null
+  description = "Overrule whether the Redshift subnet group has to be created"
+}
+
 variable "final_snapshot_identifier" {
   type        = string
   default     = "none"
@@ -80,6 +86,12 @@ variable "publicly_accessible" {
   type        = bool
   default     = false
   description = "Whether or not the Redshift cluster will be publicly accessible"
+}
+
+variable "redshift_subnet_group" {
+  type        = string
+  default     = null
+  description = "Name of Redshift subnet group the cluster should be attached to"
 }
 
 variable "skip_final_snapshot" {
