@@ -8,6 +8,11 @@ output "database" {
   description = "The name of the default database in the cluster"
 }
 
+output "elastic_ip" {
+  value       = aws_redshift_cluster.default.elastic_ip
+  description = "The Elastic IP (EIP) address for the cluster"
+}
+
 output "endpoint" {
   value       = aws_redshift_cluster.default.endpoint
   description = "The connection endpoint"
