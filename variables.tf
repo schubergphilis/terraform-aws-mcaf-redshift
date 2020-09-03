@@ -35,12 +35,6 @@ variable "cluster_type" {
   description = "The cluster type to use (either `single-node` or `multi-node`)"
 }
 
-variable "create_subnet_group" {
-  type        = bool
-  default     = null
-  description = "Overrule whether the Redshift subnet group has to be created"
-}
-
 variable "final_snapshot_identifier" {
   type        = string
   default     = "none"
@@ -102,6 +96,7 @@ variable "skip_final_snapshot" {
 
 variable "subnet_ids" {
   type        = list(string)
+  default     = null
   description = "List of subnet IDs to deploy Redshift in"
 }
 

@@ -1,6 +1,6 @@
 locals {
-  elastic_ip          = var.publicly_accessible ? aws_eip.default[0].public_ip : null
-  create_subnet_group = var.create_subnet_group != null ? var.create_subnet_group : false
+  elastic_ip        = var.publicly_accessible ? aws_eip.default[0].public_ip : null
+  subnet_group_name = var.redshift_subnet_group != null ? var.redshift_subnet_group : "redshift-subnet-group-${var.name}"
 }
 
 resource "aws_eip" "default" {
@@ -41,8 +41,8 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_redshift_subnet_group" "default" {
-  count      = local.create_subnet_group ? 1 : 0
-  name       = "redshift-subnet-group-${var.name}"
+  count      = var.subnet_ids != null ? 1 : 0
+  name       = local.subnet_group_name
   subnet_ids = var.subnet_ids
   tags       = var.tags
 }
