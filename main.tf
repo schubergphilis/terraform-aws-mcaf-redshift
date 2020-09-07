@@ -1,24 +1,18 @@
 locals {
-  bucket     = "${var.stack}-redshift"
-  elastic_ip = var.publicly_accessible ? aws_eip.default[0].public_ip : null
-  subnet_ids = length(var.subnet_ids) > 0 ? var.subnet_ids : aws_subnet.public[*].id
-  vpc_id     = data.aws_subnet.selected.vpc_id
-}
-
-data "aws_subnet" "selected" {
-  id = local.subnet_ids[0]
+  elastic_ip        = var.publicly_accessible ? aws_eip.default[0].public_ip : null
+  subnet_group_name = var.subnet_ids == null ? "default" : (var.redshift_subnet_group != null ? var.redshift_subnet_group : "redshift-subnet-group-${var.name}")
 }
 
 resource "aws_eip" "default" {
   count = var.publicly_accessible ? 1 : 0
   vpc   = true
-  tags  = merge(var.tags, map("Name", "${var.stack}-redshift"))
+  tags  = merge(var.tags, map("Name", "${var.name}-redshift"))
 }
 
 resource "aws_security_group" "default" {
-  name        = "${var.stack}-redshift"
+  name        = "redshift-${var.name}"
   description = "Access to Redshift"
-  vpc_id      = local.vpc_id
+  vpc_id      = var.vpc_id
   tags        = var.tags
 
   ingress {
@@ -47,13 +41,14 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_redshift_subnet_group" "default" {
-  name       = var.stack
-  subnet_ids = local.subnet_ids
+  count      = var.subnet_ids != null ? 1 : 0
+  name       = local.subnet_group_name
+  subnet_ids = var.subnet_ids
   tags       = var.tags
 }
 
 resource "aws_redshift_parameter_group" "default" {
-  name        = var.stack
+  name        = "redshift-parameter-group-${var.name}"
   description = "Hardened security for Redshift Clusters"
   family      = "redshift-1.0"
   tags        = var.tags
@@ -71,7 +66,7 @@ resource "aws_redshift_parameter_group" "default" {
 
 resource "aws_s3_bucket" "logging" {
   count         = var.logging ? 1 : 0
-  bucket        = local.bucket
+  bucket        = var.logging_bucket
   force_destroy = var.force_destroy
   policy        = data.aws_iam_policy_document.logging.json
   tags          = var.tags
@@ -103,7 +98,7 @@ data "aws_iam_policy_document" "logging" {
       "s3:PutObject"
     ]
     resources = [
-      "arn:aws:s3:::${local.bucket}/*"
+      "arn:aws:s3:::${var.logging_bucket}/*"
     ]
     principals {
       type        = "AWS"
@@ -117,7 +112,7 @@ data "aws_iam_policy_document" "logging" {
       "s3:GetBucketAcl"
     ]
     resources = [
-      "arn:aws:s3:::${local.bucket}"
+      "arn:aws:s3:::${var.logging_bucket}"
     ]
     principals {
       type        = "AWS"
@@ -127,14 +122,14 @@ data "aws_iam_policy_document" "logging" {
 }
 
 resource "aws_redshift_cluster" "default" {
-  cluster_identifier                  = var.stack
+  cluster_identifier                  = var.name
   database_name                       = var.database
   master_username                     = var.username
   master_password                     = var.password
   allow_version_upgrade               = true
   automated_snapshot_retention_period = 1
   cluster_parameter_group_name        = aws_redshift_parameter_group.default.name
-  cluster_subnet_group_name           = aws_redshift_subnet_group.default.name
+  cluster_subnet_group_name           = local.subnet_group_name
   cluster_type                        = var.cluster_type
   elastic_ip                          = local.elastic_ip
   encrypted                           = true

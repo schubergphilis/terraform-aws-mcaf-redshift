@@ -1,6 +1,6 @@
-variable "stack" {
+variable "name" {
   type        = string
-  description = "The stack name for the Redshift Cluster"
+  description = "The name to identify the cluster by"
 }
 
 variable "database" {
@@ -53,6 +53,11 @@ variable "logging" {
   description = "Enables logging information such as queries and connection attempts"
 }
 
+variable "logging_bucket" {
+  type        = string
+  description = "Name of the S3 bucket to write logging information to"
+}
+
 variable "iam_roles" {
   type        = list(string)
   default     = []
@@ -77,6 +82,12 @@ variable "publicly_accessible" {
   description = "Whether or not the Redshift cluster will be publicly accessible"
 }
 
+variable "redshift_subnet_group" {
+  type        = string
+  default     = null
+  description = "Name of Redshift subnet group the cluster should be attached to"
+}
+
 variable "skip_final_snapshot" {
   type        = bool
   default     = false
@@ -85,11 +96,17 @@ variable "skip_final_snapshot" {
 
 variable "subnet_ids" {
   type        = list(string)
-  default     = []
+  default     = null
   description = "List of subnet IDs to deploy Redshift in"
+}
+
+variable "vpc_id" {
+  type        = string
+  default = null
+  description = "ID of the VPC to deploy Redshift in"
 }
 
 variable "tags" {
   type        = map(string)
-  description = "A mapping of tags to assign to the bucket"
+  description = "A mapping of tags to assign to the cluster"
 }
