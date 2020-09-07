@@ -102,6 +102,7 @@ variable "subnet_ids" {
 
 variable "vpc_id" {
   type        = string
+  default = null
   description = "ID of the VPC to deploy Redshift in"
 }
 

@@ -12,10 +12,8 @@ module "redshift" {
   cidr_blocks         = ["0.0.0.0/0"]
   database            = "example_db"
   password            = random_string.redshift_password.result
-  publicly_accessible = local.publicly_accessible
+  publicly_accessible = true
   logging_bucket      = "example-redshift-logging-bucket"
-  subnet_ids          = module.vpc.redshift_subnets_ids
   username            = "root"
-  vpc_id              = module.vpc.id
   tags                = { Environment = "test", Stack = "Example" }
 }
