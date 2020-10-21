@@ -18,9 +18,9 @@ output "endpoint" {
   description = "The connection endpoint"
 }
 
-output "name" {
+output "cluster_identifier" {
   value       = aws_redshift_cluster.default.cluster_identifier
-  description = "The name the cluster can be identified by"
+  description = "The cluster identifier"
 }
 
 output "username" {
