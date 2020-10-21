@@ -3,6 +3,11 @@ output "id" {
   description = "The Redshift cluster ID"
 }
 
+output "cluster_identifier" {
+  value       = aws_redshift_cluster.default.cluster_identifier
+  description = "The cluster identifier"
+}
+
 output "database" {
   value       = var.database
   description = "The name of the default database in the cluster"
