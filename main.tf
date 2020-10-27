@@ -1,6 +1,6 @@
 locals {
   elastic_ip        = var.publicly_accessible ? aws_eip.default[0].public_ip : null
-  subnet_group_name = var.subnet_ids == null ? "default" : (var.redshift_subnet_group != null ? var.redshift_subnet_group : "redshift-subnet-group-${var.name}")
+  subnet_group_name = var.subnet_ids == null ? "default" : (var.redshift_subnet_group != null ? var.redshift_subnet_group : var.name)
 }
 
 resource "aws_eip" "default" {
@@ -48,7 +48,7 @@ resource "aws_redshift_subnet_group" "default" {
 }
 
 resource "aws_redshift_parameter_group" "default" {
-  name        = "redshift-parameter-group-${var.name}"
+  name        = var.name
   description = "Hardened security for Redshift Clusters"
   family      = "redshift-1.0"
   tags        = var.tags
