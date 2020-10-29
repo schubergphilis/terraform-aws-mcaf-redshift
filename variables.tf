@@ -1,9 +1,9 @@
 variable "additional_ingress_rules" {
   type = list(object({
-    description       = string
-    from_port         = number
-    to_port           = number
-    protocol          = string
+    description        = string
+    from_port          = number
+    to_port            = number
+    protocol           = string
     security_group_ids = list(string)
   }))
   default = []
