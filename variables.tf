@@ -6,7 +6,7 @@ variable "additional_ingress_rules" {
     protocol          = string
     security_group_ids = list(string)
   }))
-  default = null
+  default = []
 }
 
 variable "availability_zones" {
