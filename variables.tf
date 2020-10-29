@@ -1,21 +1,12 @@
-variable "name" {
-  type        = string
-  description = "The name to identify the cluster by"
-}
-
-variable "database" {
-  type        = string
-  description = "The name of the first database to be created when the cluster is created"
-}
-
-variable "username" {
-  type        = string
-  description = "Username for the master DB user"
-}
-
-variable "password" {
-  type        = string
-  description = "Password for the master DB user"
+variable "additional_ingress_rules" {
+  type = list(object({
+    description        = string
+    from_port          = number
+    to_port            = number
+    protocol           = string
+    security_group_ids = list(string)
+  }))
+  default = []
 }
 
 variable "availability_zones" {
@@ -35,6 +26,11 @@ variable "cluster_type" {
   description = "The cluster type to use (either `single-node` or `multi-node`)"
 }
 
+variable "database" {
+  type        = string
+  description = "The name of the first database to be created when the cluster is created"
+}
+
 variable "final_snapshot_identifier" {
   type        = string
   default     = "none"
@@ -45,6 +41,12 @@ variable "force_destroy" {
   type        = bool
   default     = false
   description = "A boolean that indicates all logging should be deleted when deleting the cluster"
+}
+
+variable "iam_roles" {
+  type        = list(string)
+  default     = []
+  description = "A list of IAM Role ARNs to associate with the cluster"
 }
 
 variable "logging" {
@@ -58,10 +60,15 @@ variable "logging_bucket" {
   description = "Name of the S3 bucket to write logging information to"
 }
 
-variable "iam_roles" {
-  type        = list(string)
-  default     = []
-  description = "A list of IAM Role ARNs to associate with the cluster"
+variable "name" {
+  type        = string
+  description = "The name to identify the cluster by"
+}
+
+variable "number_of_nodes" {
+  type        = number
+  default     = 1
+  description = "The number of compute nodes in the cluster"
 }
 
 variable "node_type" {
@@ -70,10 +77,9 @@ variable "node_type" {
   description = "The node type to be provisioned for the cluster"
 }
 
-variable "number_of_nodes" {
-  type        = number
-  default     = 1
-  description = "The number of compute nodes in the cluster"
+variable "password" {
+  type        = string
+  description = "Password for the master DB user"
 }
 
 variable "publicly_accessible" {
@@ -100,13 +106,18 @@ variable "subnet_ids" {
   description = "List of subnet IDs to deploy Redshift in"
 }
 
+variable "tags" {
+  type        = map(string)
+  description = "A mapping of tags to assign to the cluster"
+}
+
+variable "username" {
+  type        = string
+  description = "Username for the master DB user"
+}
+
 variable "vpc_id" {
   type        = string
   default = null
   description = "ID of the VPC to deploy Redshift in"
-}
-
-variable "tags" {
-  type        = map(string)
-  description = "A mapping of tags to assign to the cluster"
 }
