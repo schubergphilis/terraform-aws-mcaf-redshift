@@ -83,6 +83,8 @@ resource "aws_s3_bucket" "logging" {
   policy        = data.aws_iam_policy_document.logging.json
   tags          = var.tags
 
+  #tfsec:ignore:AWS002
+
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
