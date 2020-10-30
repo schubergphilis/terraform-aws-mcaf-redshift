@@ -31,6 +31,12 @@ variable "database" {
   description = "The name of the first database to be created when the cluster is created"
 }
 
+variable "egress_cidr_blocks" {
+  type        = list
+  default     = []
+  description = "The CIDR that defines the outgoing traffic security policy"
+}
+
 variable "final_snapshot_identifier" {
   type        = string
   default     = "none"
