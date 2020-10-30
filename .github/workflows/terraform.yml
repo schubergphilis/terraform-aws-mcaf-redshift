@@ -33,6 +33,8 @@ jobs:
           tf_actions_comment: true
       - name: Terraform Validate
         uses: hashicorp/terraform-github-actions@master
+        env:
+          AWS_DEFAULT_REGION: eu-west-1
         with:
           tf_actions_version: latest
           tf_actions_subcommand: validate
