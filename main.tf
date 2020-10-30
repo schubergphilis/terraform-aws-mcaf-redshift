@@ -48,7 +48,7 @@ resource "aws_security_group" "default" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.egress_cidr_blocks
   }
 }
 
@@ -82,6 +82,8 @@ resource "aws_s3_bucket" "logging" {
   force_destroy = var.force_destroy
   policy        = data.aws_iam_policy_document.logging.json
   tags          = var.tags
+
+  #tfsec:ignore:AWS002
 
   server_side_encryption_configuration {
     rule {
