@@ -15,11 +15,6 @@ variable "availability_zones" {
   description = "List of availability zones to deploy Redshift in"
 }
 
-variable "cidr_blocks" {
-  type        = list(string)
-  description = "List of CIDR blocks that should be allowed access to the Redshift cluster"
-}
-
 variable "cluster_type" {
   type        = string
   default     = "single-node"
@@ -32,9 +27,9 @@ variable "database" {
 }
 
 variable "egress_cidr_blocks" {
-  type        = list
+  type        = list(string)
   default     = []
-  description = "The CIDR that defines the outgoing traffic security policy"
+  description = "List of CIDR blocks that should be allowed access from the Redshift cluster"
 }
 
 variable "final_snapshot_identifier" {
@@ -53,6 +48,11 @@ variable "iam_roles" {
   type        = list(string)
   default     = []
   description = "A list of IAM Role ARNs to associate with the cluster"
+}
+
+variable "ingress_cidr_blocks" {
+  type        = list(string)
+  description = "List of CIDR blocks that should be allowed access to the Redshift cluster"
 }
 
 variable "logging" {

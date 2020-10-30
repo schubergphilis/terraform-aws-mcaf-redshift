@@ -20,7 +20,7 @@ resource "aws_security_group" "default" {
     from_port   = 5439
     to_port     = 5439
     protocol    = "tcp"
-    cidr_blocks = var.cidr_blocks
+    cidr_blocks = var.ingress_cidr_blocks
   }
 
   ingress {

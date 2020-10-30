@@ -18,8 +18,8 @@ Terraform module to setup and manage an AWS Redshift cluster
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| cidr\_blocks | List of CIDR blocks that should be allowed access to the Redshift cluster | `list(string)` | n/a | yes |
 | database | The name of the first database to be created when the cluster is created | `string` | n/a | yes |
+| ingress\_cidr\_blocks | List of CIDR blocks that should be allowed access to the Redshift cluster | `list(string)` | n/a | yes |
 | logging\_bucket | Name of the S3 bucket to write logging information to | `string` | n/a | yes |
 | name | The name to identify the cluster by | `string` | n/a | yes |
 | password | Password for the master DB user | `string` | n/a | yes |
@@ -28,7 +28,7 @@ Terraform module to setup and manage an AWS Redshift cluster
 | additional\_ingress\_rules | n/a | <pre>list(object({<br>    description        = string<br>    from_port          = number<br>    to_port            = number<br>    protocol           = string<br>    security_group_ids = list(string)<br>  }))</pre> | `[]` | no |
 | availability\_zones | List of availability zones to deploy Redshift in | `list(string)` | `[]` | no |
 | cluster\_type | The cluster type to use (either `single-node` or `multi-node`) | `string` | `"single-node"` | no |
-| egress\_cidr\_blocks | The CIDR that defines the outgoing traffic security policy | `list` | `[]` | no |
+| egress\_cidr\_blocks | List of CIDR blocks that should be allowed access from the Redshift cluster | `list(string)` | `[]` | no |
 | final\_snapshot\_identifier | Identifier of the final snapshot to create before deleting the cluster | `string` | `"none"` | no |
 | force\_destroy | A boolean that indicates all logging should be deleted when deleting the cluster | `bool` | `false` | no |
 | iam\_roles | A list of IAM Role ARNs to associate with the cluster | `list(string)` | `[]` | no |
