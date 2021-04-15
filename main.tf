@@ -92,6 +92,10 @@ resource "aws_s3_bucket" "logging" {
       }
     }
   }
+
+  versioning {
+    enabled = true
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "default" {
