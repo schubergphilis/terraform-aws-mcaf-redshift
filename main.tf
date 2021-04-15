@@ -6,7 +6,7 @@ locals {
 resource "aws_eip" "default" {
   count = var.publicly_accessible ? 1 : 0
   vpc   = true
-  tags  = merge(var.tags, map("Name", "redshift-${var.name}"))
+  tags  = merge(var.tags, { "Name" = "redshift-${var.name}" })
 }
 
 resource "aws_security_group" "default" {
@@ -31,7 +31,7 @@ resource "aws_security_group" "default" {
     self        = true
   }
 
-  dynamic ingress {
+  dynamic "ingress" {
     for_each = var.additional_ingress_rules
 
     content {
