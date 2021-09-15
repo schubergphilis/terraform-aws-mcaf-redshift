@@ -154,6 +154,7 @@ resource "aws_redshift_cluster" "default" {
   enhanced_vpc_routing                = var.enhanced_vpc_routing
   final_snapshot_identifier           = var.final_snapshot_identifier
   iam_roles                           = var.iam_roles
+  kms_key_id                          = var.kms_key_arn
   node_type                           = var.node_type
   number_of_nodes                     = var.number_of_nodes
   publicly_accessible                 = var.publicly_accessible
