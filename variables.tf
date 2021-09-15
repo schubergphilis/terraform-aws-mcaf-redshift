@@ -32,6 +32,12 @@ variable "egress_cidr_blocks" {
   description = "List of CIDR blocks that should be allowed access from the Redshift cluster"
 }
 
+variable "enhanced_vpc_routing" {
+  type        = bool
+  default     = false
+  description = "If true enhanced VPC routing is enabled"
+}
+
 variable "final_snapshot_identifier" {
   type        = string
   default     = "none"

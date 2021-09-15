@@ -29,6 +29,7 @@ Terraform module to setup and manage an AWS Redshift cluster
 | availability\_zones | List of availability zones to deploy Redshift in | `list(string)` | `[]` | no |
 | cluster\_type | The cluster type to use (either `single-node` or `multi-node`) | `string` | `"single-node"` | no |
 | egress\_cidr\_blocks | List of CIDR blocks that should be allowed access from the Redshift cluster | `list(string)` | `[]` | no |
+| enhanced\_vpc\_routing | If true enhanced VPC routing is enabled | `bool` | `false` | no |
 | final\_snapshot\_identifier | Identifier of the final snapshot to create before deleting the cluster | `string` | `"none"` | no |
 | force\_destroy | A boolean that indicates all logging should be deleted when deleting the cluster | `bool` | `false` | no |
 | iam\_roles | A list of IAM Role ARNs to associate with the cluster | `list(string)` | `[]` | no |

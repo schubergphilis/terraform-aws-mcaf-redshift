@@ -151,6 +151,7 @@ resource "aws_redshift_cluster" "default" {
   cluster_type                        = var.cluster_type
   elastic_ip                          = local.elastic_ip
   encrypted                           = true
+  enhanced_vpc_routing                = var.enhanced_vpc_routing
   final_snapshot_identifier           = var.final_snapshot_identifier
   iam_roles                           = var.iam_roles
   node_type                           = var.node_type
