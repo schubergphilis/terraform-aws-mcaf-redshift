@@ -76,14 +76,14 @@ resource "aws_redshift_parameter_group" "default" {
   }
 }
 
+#tfsec:ignore:aws-s3-enable-bucket-logging
+#tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "logging" {
   count         = var.logging ? 1 : 0
   bucket        = var.logging_bucket
   force_destroy = var.force_destroy
   policy        = data.aws_iam_policy_document.logging.json
   tags          = var.tags
-
-  #tfsec:ignore:AWS002
 
   server_side_encryption_configuration {
     rule {
@@ -145,7 +145,7 @@ resource "aws_redshift_cluster" "default" {
   master_username                     = var.username
   master_password                     = var.password
   allow_version_upgrade               = true
-  automated_snapshot_retention_period = 1
+  automated_snapshot_retention_period = var.automated_snapshot_retention_period
   cluster_parameter_group_name        = aws_redshift_parameter_group.default.name
   cluster_subnet_group_name           = local.subnet_group_name
   cluster_type                        = var.cluster_type
