@@ -76,14 +76,14 @@ resource "aws_redshift_parameter_group" "default" {
   }
 }
 
+#tfsec:ignore:aws-s3-enable-bucket-logging
+#tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "logging" {
   count         = var.logging ? 1 : 0
   bucket        = var.logging_bucket
   force_destroy = var.force_destroy
   policy        = data.aws_iam_policy_document.logging.json
   tags          = var.tags
-
-  #tfsec:ignore:AWS002
 
   server_side_encryption_configuration {
     rule {
