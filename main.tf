@@ -145,7 +145,7 @@ resource "aws_redshift_cluster" "default" {
   master_username                     = var.username
   master_password                     = var.password
   allow_version_upgrade               = true
-  automated_snapshot_retention_period = 1
+  automated_snapshot_retention_period = var.automated_snapshot_retention_period
   cluster_parameter_group_name        = aws_redshift_parameter_group.default.name
   cluster_subnet_group_name           = local.subnet_group_name
   cluster_type                        = var.cluster_type

@@ -9,6 +9,12 @@ variable "additional_ingress_rules" {
   default = []
 }
 
+variable "automated_snapshot_retention_period" {
+  type        = number
+  default     = 1
+  description = "The number of days automated snapshots should be retained"
+}
+
 variable "availability_zones" {
   type        = list(string)
   default     = []
