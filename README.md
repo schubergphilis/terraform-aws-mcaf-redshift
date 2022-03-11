@@ -27,6 +27,7 @@ Terraform module to setup and manage an AWS Redshift cluster
 | tags | A mapping of tags to assign to the cluster | `map(string)` | n/a | yes |
 | username | Username for the master DB user | `string` | n/a | yes |
 | additional\_ingress\_rules | n/a | <pre>list(object({<br>    description        = string<br>    from_port          = number<br>    to_port            = number<br>    protocol           = string<br>    security_group_ids = list(string)<br>  }))</pre> | `[]` | no |
+| additional\_egress\_rules | n/a | <pre>list(object({<br>    description        = string<br>    from_port          = number<br>    to_port            = number<br>    protocol           = string<br>    security_group_ids = list(string)<br>    prefix_list_ids    = list(string)<br>  }))</pre> | `[]` | no |
 | automated\_snapshot\_retention\_period | The number of days automated snapshots should be retained | `number` | `1` | no |
 | availability\_zones | List of availability zones to deploy Redshift in | `list(string)` | `[]` | no |
 | cluster\_type | The cluster type to use (either `single-node` or `multi-node`) | `string` | `"single-node"` | no |
