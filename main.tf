@@ -51,7 +51,7 @@ resource "aws_security_group" "default" {
     cidr_blocks = var.egress_cidr_blocks
   }
 
- dynamic "egress" {
+  dynamic "egress" {
     for_each = var.additional_egress_rules
 
     content {
