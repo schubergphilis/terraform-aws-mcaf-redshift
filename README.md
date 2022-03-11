@@ -7,12 +7,13 @@ Terraform module to setup and manage an AWS Redshift cluster
 | Name | Version |
 |------|---------|
 | terraform | >= 0.12.0 |
+| aws | >= 3.50.0, < 4.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | n/a |
+| aws | >= 3.50.0, < 4.0.0 |
 
 ## Inputs
 
@@ -27,6 +28,8 @@ Terraform module to setup and manage an AWS Redshift cluster
 | username | Username for the master DB user | `string` | n/a | yes |
 | additional\_ingress\_rules | n/a | <pre>list(object({<br>    description        = string<br>    from_port          = number<br>    to_port            = number<br>    protocol           = string<br>    security_group_ids = list(string)<br>  }))</pre> | `[]` | no |
 | additional\_egress\_rules | n/a | <pre>list(object({<br>    description        = string<br>    from_port          = number<br>    to_port            = number<br>    protocol           = string<br>    security_group_ids = list(string)<br>    prefix_list_ids    = list(string)<br>  }))</pre> | `[]` | no |
+=======
+| automated\_snapshot\_retention\_period | The number of days automated snapshots should be retained | `number` | `1` | no |
 | availability\_zones | List of availability zones to deploy Redshift in | `list(string)` | `[]` | no |
 | cluster\_type | The cluster type to use (either `single-node` or `multi-node`) | `string` | `"single-node"` | no |
 | egress\_cidr\_blocks | List of CIDR blocks that should be allowed access from the Redshift cluster | `list(string)` | `[]` | no |
