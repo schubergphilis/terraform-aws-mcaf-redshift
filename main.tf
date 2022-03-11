@@ -50,6 +50,19 @@ resource "aws_security_group" "default" {
     protocol    = "-1"
     cidr_blocks = var.egress_cidr_blocks
   }
+
+ dynamic "egress" {
+    for_each = var.additional_egress_rules
+
+    content {
+      description     = egress.value.description
+      from_port       = egress.value.from_port
+      to_port         = egress.value.to_port
+      protocol        = egress.value.protocol
+      security_groups = egress.value.security_group_ids
+      prefix_list_ids = egress.value.prefix_list_ids
+    }
+  }
 }
 
 resource "aws_redshift_subnet_group" "default" {

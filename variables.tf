@@ -9,6 +9,18 @@ variable "additional_ingress_rules" {
   default = []
 }
 
+variable "additional_egress_rules" {
+  type = list(object({
+    description        = string
+    from_port          = number
+    to_port            = number
+    protocol           = string
+    security_group_ids = list(string)
+    prefix_list_ids    = list(string)
+  }))
+  default = []
+}
+
 variable "availability_zones" {
   type        = list(string)
   default     = []
