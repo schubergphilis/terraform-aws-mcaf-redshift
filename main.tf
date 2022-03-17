@@ -89,35 +89,13 @@ resource "aws_redshift_parameter_group" "default" {
   }
 }
 
-#tfsec:ignore:aws-s3-enable-bucket-logging
-#tfsec:ignore:aws-s3-encryption-customer-key
-resource "aws_s3_bucket" "logging" {
-  count         = var.logging ? 1 : 0
-  bucket        = var.logging_bucket
-  force_destroy = var.force_destroy
-  policy        = data.aws_iam_policy_document.logging.json
-  tags          = var.tags
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
-
-  versioning {
-    enabled = true
-  }
-}
-
-resource "aws_s3_bucket_public_access_block" "default" {
-  count                   = var.logging ? 1 : 0
-  bucket                  = aws_s3_bucket.logging[0].id
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+module "logging_bucket" {
+  count      = var.logging ? 1 : 0
+  source     = "github.com/schubergphilis/terraform-aws-mcaf-s3?ref=v0.5.0"
+  name       = var.logging_bucket
+  policy     = data.aws_iam_policy_document.logging.json
+  versioning = true
+  tags       = var.tags
 }
 
 data "aws_redshift_service_account" "main" {}
@@ -177,7 +155,7 @@ resource "aws_redshift_cluster" "default" {
 
   logging {
     enable        = var.logging
-    bucket_name   = aws_s3_bucket.logging[0].id
+    bucket_name   = module.logging_bucket[0].name
     s3_key_prefix = "redshift-audit-logs/"
   }
 }
