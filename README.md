@@ -37,7 +37,7 @@ Terraform module to setup and manage an AWS Redshift cluster
 | force\_destroy | A boolean that indicates all logging should be deleted when deleting the cluster | `bool` | `false` | no |
 | iam\_roles | A list of IAM Role ARNs to associate with the cluster | `list(string)` | `[]` | no |
 | kms\_key\_arn | The ARN for the KMS encryption key to encrypt the Redshift cluster | `string` | `null` | no |
-| lifecycle\_rule | List of maps containing lifecycle management configuration settings for logging bucket | `any` | `[]` | no |
+| lifecycle\_rule | List of maps containing lifecycle management configuration settings | `any` | `[]` | no |
 | logging | Enables logging information such as queries and connection attempts | `bool` | `true` | no |
 | node\_type | The node type to be provisioned for the cluster | `string` | `"dc2.large"` | no |
 | number\_of\_nodes | The number of compute nodes in the cluster | `number` | `1` | no |
