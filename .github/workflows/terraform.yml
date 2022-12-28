@@ -7,8 +7,6 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-permissions: write-all
-
 jobs:
   terraform-fmt:
     runs-on: ubuntu-latest
