@@ -85,6 +85,12 @@ variable "kms_key_arn" {
   description = "The ARN for the KMS encryption key to encrypt the Redshift cluster"
 }
 
+variable "lifecycle_rule" {
+  type        = any
+  default     = []
+  description = "List of maps containing lifecycle management configuration settings"
+}
+
 variable "logging" {
   type        = bool
   default     = true
