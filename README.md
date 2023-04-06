@@ -52,6 +52,7 @@ Terraform module to setup and manage an AWS Redshift cluster
 | Name | Description |
 |------|-------------|
 | cluster\_identifier | The cluster identifier |
+| cluster\_nodes | The nodes in the redshift cluster |
 | database | The name of the default database in the cluster |
 | elastic\_ip | The Elastic IP (EIP) address for the cluster |
 | endpoint | The connection endpoint |
