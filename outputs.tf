@@ -8,6 +8,11 @@ output "cluster_identifier" {
   description = "The cluster identifier"
 }
 
+output "cluster_nodes" {
+  value       = aws_redshift_cluster.default.cluster_nodes
+  description = "The nodes in the redshift cluster"
+}
+
 output "database" {
   value       = var.database
   description = "The name of the default database in the cluster"
@@ -36,9 +41,4 @@ output "port" {
 output "security_group_id" {
   value       = length(aws_security_group.default) > 0 ? aws_security_group.default.id : ""
   description = "The ID of the security group associated with the cluster"
-}
-
-output "cluster_nodes" {
-  value       = aws_redshift_cluster.default.cluster_nodes
-  description = "The nodes in the redshift cluster"
 }
