@@ -91,7 +91,7 @@ resource "aws_redshift_parameter_group" "default" {
 
 module "logging_bucket" {
   count          = var.logging ? 1 : 0
-  source         = "github.com/schubergphilis/terraform-aws-mcaf-s3?ref=v0.5.0"
+  source         = "github.com/schubergphilis/terraform-aws-mcaf-s3?ref=v0.7.0"
   name           = var.logging_bucket
   policy         = data.aws_iam_policy_document.logging.json
   versioning     = true
