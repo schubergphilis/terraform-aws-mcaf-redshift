@@ -7,13 +7,13 @@ Terraform module to setup and manage an AWS Redshift cluster
 | Name | Version |
 |------|---------|
 | terraform | >= 1.2.0 |
-| aws | >= 4.9.0 |
+| aws | >= 5.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | >= 4.9.0 |
+| aws | >= 5.0.0 |
 
 ## Inputs
 
