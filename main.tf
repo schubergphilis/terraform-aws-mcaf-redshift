@@ -4,9 +4,9 @@ locals {
 }
 
 resource "aws_eip" "default" {
-  count = var.publicly_accessible ? 1 : 0
-  vpc   = true
-  tags  = merge(var.tags, { "Name" = "redshift-${var.name}" })
+  count  = var.publicly_accessible ? 1 : 0
+  domain = "vpc"
+  tags   = merge(var.tags, { "Name" = "redshift-${var.name}" })
 }
 
 resource "aws_security_group" "default" {
