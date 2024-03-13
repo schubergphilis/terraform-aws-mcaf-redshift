@@ -99,34 +99,20 @@ module "logging_bucket" {
   lifecycle_rule = var.lifecycle_rule
 }
 
-data "aws_redshift_service_account" "main" {}
-
 data "aws_iam_policy_document" "logging" {
   statement {
     sid = "Put bucket policy needed for Redshift audit logging"
     actions = [
-      "s3:PutObject"
+      "s3:PutObject",
+      "s3:GetBucketAcl",
     ]
     resources = [
-      "arn:aws:s3:::${var.logging_bucket}/*"
+      "arn:aws:s3:::${var.logging_bucket}",
+      "arn:aws:s3:::${var.logging_bucket}/*",
     ]
     principals {
-      type        = "AWS"
-      identifiers = [data.aws_redshift_service_account.main.arn]
-    }
-  }
-
-  statement {
-    sid = "Get ACL bucket policy needed for Redshift audit logging"
-    actions = [
-      "s3:GetBucketAcl"
-    ]
-    resources = [
-      "arn:aws:s3:::${var.logging_bucket}"
-    ]
-    principals {
-      type        = "AWS"
-      identifiers = [data.aws_redshift_service_account.main.arn]
+      type        = "Service"
+      identifiers = ["redshift.amazonaws.com"]
     }
   }
 }
