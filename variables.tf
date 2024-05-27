@@ -27,12 +27,6 @@ variable "automated_snapshot_retention_period" {
   description = "The number of days automated snapshots should be retained"
 }
 
-variable "availability_zones" {
-  type        = list(string)
-  default     = []
-  description = "List of availability zones to deploy Redshift in"
-}
-
 variable "cluster_type" {
   type        = string
   default     = "single-node"

@@ -4,6 +4,7 @@ locals {
   subnet_group_name     = var.subnet_ids == null ? "default" : (var.redshift_subnet_group != null ? var.redshift_subnet_group : var.name)
 }
 
+#checkov:skip=CKV2_AWS_19:The EIP is created conditionally based on the publicly_accessible variable and attached to the cluster
 resource "aws_eip" "default" {
   count  = var.publicly_accessible ? 1 : 0
   domain = "vpc"
@@ -95,6 +96,7 @@ module "logging_bucket" {
 
   source         = "github.com/schubergphilis/terraform-aws-mcaf-s3?ref=v0.10.0"
   name           = var.logging.bucket_name
+  force_destroy  = var.force_destroy
   policy         = data.aws_iam_policy_document.logging[0].json
   versioning     = true
   lifecycle_rule = var.logging.bucket_lifecycle_rule
@@ -121,6 +123,7 @@ data "aws_iam_policy_document" "logging" {
   }
 }
 
+#checkov:skip=CKV_AWS_71: Logging is enabled using the aws_redshift_logging resource
 resource "aws_redshift_cluster" "default" {
   cluster_identifier                  = var.name
   database_name                       = var.database
@@ -133,16 +136,17 @@ resource "aws_redshift_cluster" "default" {
   cluster_type                        = var.cluster_type
   elastic_ip                          = local.elastic_ip
   encrypted                           = true
-  enhanced_vpc_routing                = var.enhanced_vpc_routing
-  final_snapshot_identifier           = var.final_snapshot_identifier
-  iam_roles                           = var.iam_roles
-  kms_key_id                          = var.kms_key_arn
-  node_type                           = var.node_type
-  number_of_nodes                     = var.number_of_nodes
-  publicly_accessible                 = var.publicly_accessible
-  skip_final_snapshot                 = var.skip_final_snapshot
-  vpc_security_group_ids              = [aws_security_group.default.id]
-  tags                                = var.tags
+  #checkov:skip=CKV_AWS_321:User defined
+  enhanced_vpc_routing      = var.enhanced_vpc_routing
+  final_snapshot_identifier = var.final_snapshot_identifier
+  iam_roles                 = var.iam_roles
+  kms_key_id                = var.kms_key_arn
+  node_type                 = var.node_type
+  number_of_nodes           = var.number_of_nodes
+  publicly_accessible       = var.publicly_accessible
+  skip_final_snapshot       = var.skip_final_snapshot
+  vpc_security_group_ids    = [aws_security_group.default.id]
+  tags                      = var.tags
 }
 
 resource "aws_redshift_logging" "default" {
