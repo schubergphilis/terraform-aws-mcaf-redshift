@@ -7,7 +7,7 @@ resource "random_string" "redshift_password" {
 }
 
 module "redshift" {
-  source              = "../"
+  source              = "../.."
   name                = "example-1"
   ingress_cidr_blocks = ["0.0.0.0/0"]
   database            = "example_db"

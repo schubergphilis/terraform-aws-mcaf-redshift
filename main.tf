@@ -4,8 +4,8 @@ locals {
   subnet_group_name     = var.subnet_ids == null ? "default" : (var.redshift_subnet_group != null ? var.redshift_subnet_group : var.name)
 }
 
-#checkov:skip=CKV2_AWS_19:The EIP is created conditionally based on the publicly_accessible variable and attached to the cluster
 resource "aws_eip" "default" {
+  #checkov:skip=CKV2_AWS_19:The EIP is created conditionally based on the publicly_accessible variable and attached to the cluster
   count  = var.publicly_accessible ? 1 : 0
   domain = "vpc"
   tags   = merge(var.tags, { "Name" = "redshift-${var.name}" })
@@ -123,8 +123,8 @@ data "aws_iam_policy_document" "logging" {
   }
 }
 
-#checkov:skip=CKV_AWS_71: Logging is enabled using the aws_redshift_logging resource
 resource "aws_redshift_cluster" "default" {
+  #checkov:skip=CKV_AWS_71: Logging is enabled using the aws_redshift_logging resource
   cluster_identifier                  = var.name
   database_name                       = var.database
   master_username                     = var.username
@@ -156,5 +156,5 @@ resource "aws_redshift_logging" "default" {
   bucket_name          = var.logging.create_bucket ? module.logging_bucket[0].name : var.logging.bucket_name
   log_destination_type = var.logging.log_destination_type
   log_exports          = var.logging.log_exports
-  s3_key_prefix        = var.logging.log_destination_type == "s3" ? var.logging.bucket_key_prefix : null
+  s3_key_prefix        = var.logging.log_destination_type == "s3" ? var.logging.bucket_prefix : null
 }
