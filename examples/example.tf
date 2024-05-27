@@ -9,11 +9,15 @@ resource "random_string" "redshift_password" {
 module "redshift" {
   source              = "../"
   name                = "example-1"
-  cidr_blocks         = ["0.0.0.0/0"]
+  ingress_cidr_blocks = ["0.0.0.0/0"]
   database            = "example_db"
   password            = random_string.redshift_password.result
   publicly_accessible = true
-  logging_bucket      = "example-redshift-logging-bucket"
   username            = "root"
   tags                = { Environment = "test", Stack = "Example" }
+
+  logging = {
+    bucket_name          = "example-redshift-logging-bucket"
+    log_destination_type = "s3"
+  }
 }

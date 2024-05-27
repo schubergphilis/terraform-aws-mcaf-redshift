@@ -1,6 +1,7 @@
 locals {
-  elastic_ip        = var.publicly_accessible ? aws_eip.default[0].public_ip : null
-  subnet_group_name = var.subnet_ids == null ? "default" : (var.redshift_subnet_group != null ? var.redshift_subnet_group : var.name)
+  create_logging_bucket = try(var.logging.create_bucket, false) && try(var.logging.log_destination_type, "") == "s3" ? 1 : 0
+  elastic_ip            = var.publicly_accessible ? aws_eip.default[0].public_ip : null
+  subnet_group_name     = var.subnet_ids == null ? "default" : (var.redshift_subnet_group != null ? var.redshift_subnet_group : var.name)
 }
 
 resource "aws_eip" "default" {
@@ -90,16 +91,19 @@ resource "aws_redshift_parameter_group" "default" {
 }
 
 module "logging_bucket" {
-  count          = var.logging ? 1 : 0
+  count = local.create_logging_bucket
+
   source         = "github.com/schubergphilis/terraform-aws-mcaf-s3?ref=v0.10.0"
-  name           = var.logging_bucket
-  policy         = data.aws_iam_policy_document.logging.json
+  name           = var.logging.bucket_name
+  policy         = data.aws_iam_policy_document.logging[0].json
   versioning     = true
+  lifecycle_rule = var.logging.bucket_lifecycle_rule
   tags           = var.tags
-  lifecycle_rule = var.lifecycle_rule
 }
 
 data "aws_iam_policy_document" "logging" {
+  count = local.create_logging_bucket
+
   statement {
     sid = "Put bucket policy needed for Redshift audit logging"
     actions = [
@@ -107,8 +111,8 @@ data "aws_iam_policy_document" "logging" {
       "s3:GetBucketAcl",
     ]
     resources = [
-      "arn:aws:s3:::${var.logging_bucket}",
-      "arn:aws:s3:::${var.logging_bucket}/*",
+      "arn:aws:s3:::${var.logging.bucket_name}",
+      "arn:aws:s3:::${var.logging.bucket_name}/*",
     ]
     principals {
       type        = "Service"
@@ -139,10 +143,14 @@ resource "aws_redshift_cluster" "default" {
   skip_final_snapshot                 = var.skip_final_snapshot
   vpc_security_group_ids              = [aws_security_group.default.id]
   tags                                = var.tags
+}
 
-  logging {
-    enable        = var.logging
-    bucket_name   = module.logging_bucket[0].name
-    s3_key_prefix = "redshift-audit-logs/"
-  }
+resource "aws_redshift_logging" "default" {
+  count = var.logging != null ? 1 : 0
+
+  cluster_identifier   = aws_redshift_cluster.default.id
+  bucket_name          = var.logging.create_bucket ? module.logging_bucket[0].name : var.logging.bucket_name
+  log_destination_type = var.logging.log_destination_type
+  log_exports          = var.logging.log_exports
+  s3_key_prefix        = var.logging.log_destination_type == "s3" ? var.logging.bucket_key_prefix : null
 }

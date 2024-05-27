@@ -85,21 +85,22 @@ variable "kms_key_arn" {
   description = "The ARN for the KMS encryption key to encrypt the Redshift cluster"
 }
 
-variable "lifecycle_rule" {
-  type        = any
-  default     = []
-  description = "List of maps containing lifecycle management configuration settings"
-}
-
 variable "logging" {
-  type        = bool
-  default     = true
-  description = "Enables logging information such as queries and connection attempts"
-}
+  type = object({
+    bucket_key_prefix     = optional(string, "redshift-audit-logs/")
+    bucket_lifecycle_rule = optional(any, [])
+    bucket_name           = optional(string, null)
+    create_bucket         = optional(bool, true)
+    log_destination_type  = string
+    log_exports           = optional(list(string), ["connectionlog", "useractivitylog", "userlog"])
+  })
+  default     = null
+  description = "Logging configuration"
 
-variable "logging_bucket" {
-  type        = string
-  description = "Name of the S3 bucket to write logging information to"
+  validation {
+    condition     = var.logging == null ? true : contains(["s3", "cloudwatch"], var.logging.log_destination_type)
+    error_message = "Valid values are \"s3\" or \"cloudwatch\"."
+  }
 }
 
 variable "name" {
