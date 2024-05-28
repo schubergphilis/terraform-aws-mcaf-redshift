@@ -155,6 +155,6 @@ resource "aws_redshift_logging" "default" {
   cluster_identifier   = aws_redshift_cluster.default.id
   bucket_name          = var.logging.create_bucket ? module.logging_bucket[0].name : var.logging.bucket_name
   log_destination_type = var.logging.log_destination_type
-  log_exports          = var.logging.log_exports
+  log_exports          = var.logging.log_destination_type == "cloudwatch" ? var.logging.log_exports : null
   s3_key_prefix        = var.logging.log_destination_type == "s3" ? var.logging.bucket_prefix : null
 }
