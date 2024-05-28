@@ -27,12 +27,6 @@ variable "automated_snapshot_retention_period" {
   description = "The number of days automated snapshots should be retained"
 }
 
-variable "availability_zones" {
-  type        = list(string)
-  default     = []
-  description = "List of availability zones to deploy Redshift in"
-}
-
 variable "cluster_type" {
   type        = string
   default     = "single-node"
@@ -85,21 +79,22 @@ variable "kms_key_arn" {
   description = "The ARN for the KMS encryption key to encrypt the Redshift cluster"
 }
 
-variable "lifecycle_rule" {
-  type        = any
-  default     = []
-  description = "List of maps containing lifecycle management configuration settings"
-}
-
 variable "logging" {
-  type        = bool
-  default     = true
-  description = "Enables logging information such as queries and connection attempts"
-}
+  type = object({
+    bucket_lifecycle_rule = optional(any, [])
+    bucket_name           = optional(string, null)
+    bucket_prefix         = optional(string, "redshift-audit-logs/")
+    create_bucket         = optional(bool, true)
+    log_destination_type  = string
+    log_exports           = optional(list(string), ["connectionlog", "useractivitylog", "userlog"])
+  })
+  default     = null
+  description = "Logging configuration"
 
-variable "logging_bucket" {
-  type        = string
-  description = "Name of the S3 bucket to write logging information to"
+  validation {
+    condition     = var.logging == null ? true : contains(["s3", "cloudwatch"], var.logging.log_destination_type)
+    error_message = "Valid values are \"s3\" or \"cloudwatch\"."
+  }
 }
 
 variable "name" {

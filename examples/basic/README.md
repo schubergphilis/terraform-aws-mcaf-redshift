@@ -2,13 +2,17 @@
 <!--- BEGIN_TF_DOCS --->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| terraform | >= 1.3 |
+| aws | >= 4.62.0 |
+| random | >= 3.4.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| random | n/a |
+| random | >= 3.4.0 |
 
 ## Inputs
 

@@ -1,7 +1,8 @@
 # terraform-aws-mcaf-redshift
-Terraform module to setup and manage an AWS Redshift cluster
 
-<!--- BEGIN_TF_DOCS --->
+Terraform module to setup and manage an AWS Redshift cluster.
+
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -61,4 +62,4 @@ Terraform module to setup and manage an AWS Redshift cluster
 | security\_group\_id | The ID of the security group associated with the cluster |
 | username | Username for the master DB user |
 
-<!--- END_TF_DOCS --->
+<!-- END_TF_DOCS -->
