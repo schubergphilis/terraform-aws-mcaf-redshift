@@ -94,7 +94,9 @@ resource "aws_redshift_parameter_group" "default" {
 module "logging_bucket" {
   count = local.create_logging_bucket
 
-  source         = "github.com/schubergphilis/terraform-aws-mcaf-s3?ref=v0.10.0"
+  source  = "schubergphilis/mcaf-s3/aws"
+  version = "~> 0.14"
+
   name           = var.logging.bucket_name
   force_destroy  = var.force_destroy
   policy         = data.aws_iam_policy_document.logging[0].json
