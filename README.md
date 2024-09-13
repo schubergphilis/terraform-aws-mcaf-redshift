@@ -42,7 +42,6 @@ Terraform module to setup and manage an AWS Redshift cluster.
 | <a name="input_ingress_cidr_blocks"></a> [ingress\_cidr\_blocks](#input\_ingress\_cidr\_blocks) | List of CIDR blocks that should be allowed access to the Redshift cluster | `list(string)` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | The name to identify the cluster by | `string` | n/a | yes |
 | <a name="input_password"></a> [password](#input\_password) | Password for the master DB user | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the cluster | `map(string)` | n/a | yes |
 | <a name="input_username"></a> [username](#input\_username) | Username for the master DB user | `string` | n/a | yes |
 | <a name="input_additional_egress_rules"></a> [additional\_egress\_rules](#input\_additional\_egress\_rules) | n/a | <pre>list(object({<br>    description        = string<br>    from_port          = number<br>    to_port            = number<br>    protocol           = string<br>    security_group_ids = list(string)<br>    prefix_list_ids    = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_additional_ingress_rules"></a> [additional\_ingress\_rules](#input\_additional\_ingress\_rules) | n/a | <pre>list(object({<br>    description        = string<br>    from_port          = number<br>    to_port            = number<br>    protocol           = string<br>    security_group_ids = list(string)<br>  }))</pre> | `[]` | no |
@@ -61,6 +60,7 @@ Terraform module to setup and manage an AWS Redshift cluster.
 | <a name="input_redshift_subnet_group"></a> [redshift\_subnet\_group](#input\_redshift\_subnet\_group) | Name of Redshift subnet group the cluster should be attached to | `string` | `null` | no |
 | <a name="input_skip_final_snapshot"></a> [skip\_final\_snapshot](#input\_skip\_final\_snapshot) | Determines whether a final snapshot is created before deleting the cluster | `bool` | `false` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | List of subnet IDs to deploy Redshift in | `list(string)` | `null` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the cluster | `map(string)` | `{}` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of the VPC to deploy Redshift in | `string` | `null` | no |
 
 ## Outputs
