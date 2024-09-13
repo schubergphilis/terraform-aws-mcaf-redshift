@@ -20,7 +20,7 @@ Terraform module to setup and manage an AWS Redshift cluster.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_logging_bucket"></a> [logging\_bucket](#module\_logging\_bucket) | github.com/schubergphilis/terraform-aws-mcaf-s3 | v0.10.0 |
+| <a name="module_logging_bucket"></a> [logging\_bucket](#module\_logging\_bucket) | schubergphilis/mcaf-s3/aws | ~> 0.14 |
 
 ## Resources
 
