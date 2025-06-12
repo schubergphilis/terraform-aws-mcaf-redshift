@@ -81,19 +81,30 @@ variable "kms_key_arn" {
 
 variable "logging" {
   type = object({
-    bucket_lifecycle_rule = optional(any, [])
-    bucket_name           = optional(string, null)
-    bucket_prefix         = optional(string, "redshift-audit-logs/")
     create_bucket         = optional(bool, true)
+    bucket_lifecycle_rule = optional(any, [])
+    bucket_name           = optional(string)
+    bucket_prefix         = optional(string, "redshift-audit-logs/")
     log_destination_type  = string
     log_exports           = optional(list(string), ["connectionlog", "useractivitylog", "userlog"])
   })
   default     = null
-  description = "Logging configuration"
+  description = <<-EOT
+    Logging configuration for Redshift cluster.
+    
+    `bucket_lifecycle_rule`: List of lifecycle configuration settings for the logging S3 bucket.
+    See https://github.com/schubergphilis/terraform-aws-mcaf-s3 for complete structure.
+    Passed directly to the S3 module's `lifecycle_rule` variable.
+  EOT
 
   validation {
     condition     = var.logging == null ? true : contains(["s3", "cloudwatch"], var.logging.log_destination_type)
     error_message = "Valid values are \"s3\" or \"cloudwatch\"."
+  }
+
+  validation {
+    condition     = var.logging == null ? true : (var.logging.log_destination_type == "s3" ? var.logging.bucket_name != null : true)
+    error_message = "\"bucket_name\" must be provided when log_destination_type is \"s3\"."
   }
 }
 
