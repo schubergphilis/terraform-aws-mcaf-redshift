@@ -1,5 +1,5 @@
 locals {
-  create_logging_bucket = try(var.logging.create_bucket, false) && try(var.logging.log_destination_type, "") == "s3" ? 1 : 0
+  create_logging_bucket = try(var.logging.create_bucket, false) && try(var.logging.log_destination_type, "") == "s3" ? true : false
   elastic_ip            = var.publicly_accessible ? aws_eip.default[0].public_ip : null
   subnet_group_name     = var.subnet_ids == null ? "default" : (var.redshift_subnet_group != null ? var.redshift_subnet_group : var.name)
 }
@@ -94,22 +94,8 @@ resource "aws_redshift_parameter_group" "default" {
   }
 }
 
-module "logging_bucket" {
-  count = local.create_logging_bucket
-
-  source  = "schubergphilis/mcaf-s3/aws"
-  version = "~> 0.14"
-
-  name           = var.logging.bucket_name
-  force_destroy  = var.force_destroy
-  policy         = data.aws_iam_policy_document.logging[0].json
-  versioning     = true
-  lifecycle_rule = var.logging.bucket_lifecycle_rule
-  tags           = var.tags
-}
-
 data "aws_iam_policy_document" "logging" {
-  count = local.create_logging_bucket
+  count = local.create_logging_bucket ? 1 : 0
 
   statement {
     sid = "Put bucket policy needed for Redshift audit logging"
@@ -126,6 +112,20 @@ data "aws_iam_policy_document" "logging" {
       identifiers = ["redshift.amazonaws.com"]
     }
   }
+}
+
+module "logging_bucket" {
+  count = local.create_logging_bucket ? 1 : 0
+
+  source  = "schubergphilis/mcaf-s3/aws"
+  version = "~> 1.5"
+
+  name           = var.logging.bucket_name
+  force_destroy  = var.force_destroy
+  policy         = data.aws_iam_policy_document.logging[0].json
+  lifecycle_rule = var.logging.bucket_lifecycle_rule
+  versioning     = true
+  tags           = var.tags
 }
 
 resource "aws_redshift_cluster" "default" {
@@ -158,7 +158,7 @@ resource "aws_redshift_logging" "default" {
   count = var.logging != null ? 1 : 0
 
   cluster_identifier   = aws_redshift_cluster.default.id
-  bucket_name          = var.logging.create_bucket ? module.logging_bucket[0].name : var.logging.bucket_name
+  bucket_name          = local.create_logging_bucket ? module.logging_bucket[0].name : var.logging.bucket_name
   log_destination_type = var.logging.log_destination_type
   log_exports          = var.logging.log_destination_type == "cloudwatch" ? var.logging.log_exports : null
   s3_key_prefix        = var.logging.log_destination_type == "s3" ? var.logging.bucket_prefix : null
