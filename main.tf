@@ -13,60 +13,43 @@ resource "aws_eip" "default" {
 }
 
 resource "aws_security_group" "default" {
+  #checkov:skip=CKV2_AWS_5:Security group is conditionally attached to Redshift cluster when no existing security groups are provided
+  count = var.subnet_ids != null && length(var.security_group_ids) == 0 ? 1 : 0
+
   name        = "redshift-${var.name}"
   description = "Access to Redshift"
   vpc_id      = var.vpc_id
   tags        = var.tags
+}
 
-  ingress {
-    description = "All inbound traffic"
-    from_port   = 5439
-    to_port     = 5439
-    protocol    = "tcp"
-    cidr_blocks = var.ingress_cidr_blocks
-  }
+resource "aws_vpc_security_group_egress_rule" "default" {
+  for_each = var.subnet_ids != null && length(var.security_group_ids) == 0 && length(var.security_group_egress_rules) != 0 ? { for v in var.security_group_egress_rules : v.description => v } : {}
 
-  ingress {
-    description = "All inbound traffic"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    self        = true
-  }
+  cidr_ipv4                    = each.value.cidr_ipv4
+  cidr_ipv6                    = each.value.cidr_ipv6
+  description                  = each.value.description
+  from_port                    = each.value.from_port
+  ip_protocol                  = each.value.ip_protocol
+  prefix_list_id               = each.value.prefix_list_id
+  referenced_security_group_id = each.value.referenced_security_group_id
+  security_group_id            = aws_security_group.default[0].id
+  to_port                      = each.value.to_port
+  tags                         = var.tags
+}
 
-  dynamic "ingress" {
-    for_each = var.additional_ingress_rules
+resource "aws_vpc_security_group_ingress_rule" "default" {
+  for_each = var.subnet_ids != null && length(var.security_group_ids) == 0 && length(var.security_group_ingress_rules) != 0 ? { for v in var.security_group_ingress_rules : v.description => v } : {}
 
-    content {
-      description     = ingress.value.description
-      from_port       = ingress.value.from_port
-      to_port         = ingress.value.to_port
-      protocol        = ingress.value.protocol
-      security_groups = ingress.value.security_group_ids
-    }
-  }
-
-  #checkov:skip=CKV_AWS_382:Default egress rule will be removed in future version; users must define specific egress rules via additional_egress_rules variable
-  egress {
-    description = "All outbound traffic"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = var.egress_cidr_blocks
-  }
-
-  dynamic "egress" {
-    for_each = var.additional_egress_rules
-
-    content {
-      description     = egress.value.description
-      from_port       = egress.value.from_port
-      to_port         = egress.value.to_port
-      protocol        = egress.value.protocol
-      security_groups = egress.value.security_group_ids
-      prefix_list_ids = egress.value.prefix_list_ids
-    }
-  }
+  cidr_ipv4                    = each.value.cidr_ipv4
+  cidr_ipv6                    = each.value.cidr_ipv6
+  description                  = each.value.description
+  from_port                    = each.value.from_port
+  ip_protocol                  = each.value.ip_protocol
+  prefix_list_id               = each.value.prefix_list_id
+  referenced_security_group_id = each.value.referenced_security_group_id
+  security_group_id            = aws_security_group.default[0].id
+  to_port                      = each.value.to_port
+  tags                         = var.tags
 }
 
 resource "aws_redshift_subnet_group" "default" {
@@ -150,7 +133,7 @@ resource "aws_redshift_cluster" "default" {
   number_of_nodes           = var.number_of_nodes
   publicly_accessible       = var.publicly_accessible
   skip_final_snapshot       = var.skip_final_snapshot
-  vpc_security_group_ids    = [aws_security_group.default.id]
+  vpc_security_group_ids    = var.subnet_ids != null && length(var.security_group_ids) == 0 ? [aws_security_group.default[0].id] : var.security_group_ids
   tags                      = var.tags
 }
 
