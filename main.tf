@@ -46,6 +46,7 @@ resource "aws_security_group" "default" {
     }
   }
 
+  #checkov:skip=CKV_AWS_382:Default egress rule will be removed in future version; users must define specific egress rules via additional_egress_rules variable
   egress {
     description = "All outbound traffic"
     from_port   = 0
