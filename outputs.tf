@@ -28,11 +28,6 @@ output "endpoint" {
   description = "The connection endpoint"
 }
 
-output "username" {
-  value       = var.username
-  description = "Username for the master DB user"
-}
-
 output "port" {
   value       = aws_redshift_cluster.default.port
   description = "The port the cluster responds on"
@@ -41,4 +36,9 @@ output "port" {
 output "security_group_id" {
   value       = length(aws_security_group.default) > 0 ? aws_security_group.default.id : ""
   description = "The ID of the security group associated with the cluster"
+}
+
+output "username" {
+  value       = var.username
+  description = "Username for the master DB user"
 }

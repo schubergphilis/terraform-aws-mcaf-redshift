@@ -6,7 +6,8 @@ locals {
 
 resource "aws_eip" "default" {
   #checkov:skip=CKV2_AWS_19:The EIP is created conditionally based on the publicly_accessible variable and attached to the cluster
-  count  = var.publicly_accessible ? 1 : 0
+  count = var.publicly_accessible ? 1 : 0
+
   domain = "vpc"
   tags   = merge(var.tags, { "Name" = "redshift-${var.name}" })
 }
@@ -68,7 +69,8 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_redshift_subnet_group" "default" {
-  count      = var.subnet_ids != null ? 1 : 0
+  count = var.subnet_ids != null ? 1 : 0
+
   name       = local.subnet_group_name
   subnet_ids = var.subnet_ids
   tags       = var.tags
