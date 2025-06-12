@@ -20,7 +20,7 @@ Terraform module to setup and manage an AWS Redshift cluster.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_logging_bucket"></a> [logging\_bucket](#module\_logging\_bucket) | schubergphilis/mcaf-s3/aws | ~> 0.14 |
+| <a name="module_logging_bucket"></a> [logging\_bucket](#module\_logging\_bucket) | schubergphilis/mcaf-s3/aws | ~> 1.5 |
 
 ## Resources
 
@@ -53,7 +53,7 @@ Terraform module to setup and manage an AWS Redshift cluster.
 | <a name="input_force_destroy"></a> [force\_destroy](#input\_force\_destroy) | A boolean that indicates all logging should be deleted when deleting the cluster | `bool` | `false` | no |
 | <a name="input_iam_roles"></a> [iam\_roles](#input\_iam\_roles) | A list of IAM Role ARNs to associate with the cluster | `list(string)` | `[]` | no |
 | <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | The ARN for the KMS encryption key to encrypt the Redshift cluster | `string` | `null` | no |
-| <a name="input_logging"></a> [logging](#input\_logging) | Logging configuration | <pre>object({<br/>    bucket_lifecycle_rule = optional(any, [])<br/>    bucket_name           = optional(string, null)<br/>    bucket_prefix         = optional(string, "redshift-audit-logs/")<br/>    create_bucket         = optional(bool, true)<br/>    log_destination_type  = string<br/>    log_exports           = optional(list(string), ["connectionlog", "useractivitylog", "userlog"])<br/>  })</pre> | `null` | no |
+| <a name="input_logging"></a> [logging](#input\_logging) | Logging configuration for Redshift cluster.<br/><br/>`bucket_lifecycle_rule`: List of lifecycle configuration settings for the logging S3 bucket.<br/>See https://github.com/schubergphilis/terraform-aws-mcaf-s3 for complete structure.<br/>Passed directly to the S3 module's `lifecycle_rule` variable. | <pre>object({<br/>    create_bucket         = optional(bool, true)<br/>    bucket_lifecycle_rule = optional(any, [])<br/>    bucket_name           = optional(string)<br/>    bucket_prefix         = optional(string, "redshift-audit-logs/")<br/>    log_destination_type  = string<br/>    log_exports           = optional(list(string), ["connectionlog", "useractivitylog", "userlog"])<br/>  })</pre> | `null` | no |
 | <a name="input_node_type"></a> [node\_type](#input\_node\_type) | The node type to be provisioned for the cluster | `string` | `"dc2.large"` | no |
 | <a name="input_number_of_nodes"></a> [number\_of\_nodes](#input\_number\_of\_nodes) | The number of compute nodes in the cluster | `number` | `1` | no |
 | <a name="input_publicly_accessible"></a> [publicly\_accessible](#input\_publicly\_accessible) | Whether or not the Redshift cluster will be publicly accessible | `bool` | `false` | no |
