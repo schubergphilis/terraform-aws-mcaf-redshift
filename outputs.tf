@@ -34,7 +34,7 @@ output "port" {
 }
 
 output "security_group_id" {
-  value       = length(aws_security_group.default) > 0 ? aws_security_group.default.id : ""
+  value       = try(aws_security_group.default[0].id, "")
   description = "The ID of the security group associated with the cluster"
 }
 

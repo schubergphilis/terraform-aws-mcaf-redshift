@@ -32,6 +32,8 @@ Terraform module to setup and manage an AWS Redshift cluster.
 | [aws_redshift_parameter_group.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_parameter_group) | resource |
 | [aws_redshift_subnet_group.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/redshift_subnet_group) | resource |
 | [aws_security_group.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
+| [aws_vpc_security_group_egress_rule.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_egress_rule) | resource |
+| [aws_vpc_security_group_ingress_rule.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule) | resource |
 | [aws_iam_policy_document.logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
@@ -39,15 +41,11 @@ Terraform module to setup and manage an AWS Redshift cluster.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_database"></a> [database](#input\_database) | The name of the first database to be created when the cluster is created | `string` | n/a | yes |
-| <a name="input_ingress_cidr_blocks"></a> [ingress\_cidr\_blocks](#input\_ingress\_cidr\_blocks) | List of CIDR blocks that should be allowed access to the Redshift cluster | `list(string)` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | The name to identify the cluster by | `string` | n/a | yes |
 | <a name="input_password"></a> [password](#input\_password) | Password for the master DB user | `string` | n/a | yes |
 | <a name="input_username"></a> [username](#input\_username) | Username for the master DB user | `string` | n/a | yes |
-| <a name="input_additional_egress_rules"></a> [additional\_egress\_rules](#input\_additional\_egress\_rules) | n/a | <pre>list(object({<br/>    description        = string<br/>    from_port          = number<br/>    to_port            = number<br/>    protocol           = string<br/>    security_group_ids = list(string)<br/>    prefix_list_ids    = list(string)<br/>  }))</pre> | `[]` | no |
-| <a name="input_additional_ingress_rules"></a> [additional\_ingress\_rules](#input\_additional\_ingress\_rules) | n/a | <pre>list(object({<br/>    description        = string<br/>    from_port          = number<br/>    to_port            = number<br/>    protocol           = string<br/>    security_group_ids = list(string)<br/>  }))</pre> | `[]` | no |
 | <a name="input_automated_snapshot_retention_period"></a> [automated\_snapshot\_retention\_period](#input\_automated\_snapshot\_retention\_period) | The number of days automated snapshots should be retained | `number` | `1` | no |
 | <a name="input_cluster_type"></a> [cluster\_type](#input\_cluster\_type) | The cluster type to use (either `single-node` or `multi-node`) | `string` | `"single-node"` | no |
-| <a name="input_egress_cidr_blocks"></a> [egress\_cidr\_blocks](#input\_egress\_cidr\_blocks) | List of CIDR blocks that should be allowed access from the Redshift cluster | `list(string)` | `[]` | no |
 | <a name="input_enhanced_vpc_routing"></a> [enhanced\_vpc\_routing](#input\_enhanced\_vpc\_routing) | If true enhanced VPC routing is enabled | `bool` | `false` | no |
 | <a name="input_final_snapshot_identifier"></a> [final\_snapshot\_identifier](#input\_final\_snapshot\_identifier) | Identifier of the final snapshot to create before deleting the cluster | `string` | `"none"` | no |
 | <a name="input_force_destroy"></a> [force\_destroy](#input\_force\_destroy) | A boolean that indicates all logging should be deleted when deleting the cluster | `bool` | `false` | no |
@@ -58,6 +56,9 @@ Terraform module to setup and manage an AWS Redshift cluster.
 | <a name="input_number_of_nodes"></a> [number\_of\_nodes](#input\_number\_of\_nodes) | The number of compute nodes in the cluster | `number` | `1` | no |
 | <a name="input_publicly_accessible"></a> [publicly\_accessible](#input\_publicly\_accessible) | Whether or not the Redshift cluster will be publicly accessible | `bool` | `false` | no |
 | <a name="input_redshift_subnet_group"></a> [redshift\_subnet\_group](#input\_redshift\_subnet\_group) | Name of Redshift subnet group the cluster should be attached to | `string` | `null` | no |
+| <a name="input_security_group_egress_rules"></a> [security\_group\_egress\_rules](#input\_security\_group\_egress\_rules) | Security Group egress rules | <pre>list(object({<br/>    cidr_ipv4                    = optional(string)<br/>    cidr_ipv6                    = optional(string)<br/>    description                  = string<br/>    from_port                    = optional(number)<br/>    ip_protocol                  = optional(string, "-1")<br/>    prefix_list_id               = optional(string)<br/>    referenced_security_group_id = optional(string)<br/>    to_port                      = optional(number)<br/>  }))</pre> | `[]` | no |
+| <a name="input_security_group_ids"></a> [security\_group\_ids](#input\_security\_group\_ids) | The security group(s) for running the Redshift cluster within the VPC. If not specified a default SG will be created | `list(string)` | `[]` | no |
+| <a name="input_security_group_ingress_rules"></a> [security\_group\_ingress\_rules](#input\_security\_group\_ingress\_rules) | Security Group ingress rules | <pre>list(object({<br/>    cidr_ipv4                    = optional(string)<br/>    cidr_ipv6                    = optional(string)<br/>    description                  = string<br/>    from_port                    = optional(number)<br/>    ip_protocol                  = optional(string, "-1")<br/>    prefix_list_id               = optional(string)<br/>    referenced_security_group_id = optional(string)<br/>    to_port                      = optional(number)<br/>  }))</pre> | `[]` | no |
 | <a name="input_skip_final_snapshot"></a> [skip\_final\_snapshot](#input\_skip\_final\_snapshot) | Determines whether a final snapshot is created before deleting the cluster | `bool` | `false` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | List of subnet IDs to deploy Redshift in | `list(string)` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the cluster | `map(string)` | `{}` | no |
