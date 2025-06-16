@@ -1,26 +1,3 @@
-variable "additional_egress_rules" {
-  type = list(object({
-    description        = string
-    from_port          = number
-    to_port            = number
-    protocol           = string
-    security_group_ids = list(string)
-    prefix_list_ids    = list(string)
-  }))
-  default = []
-}
-
-variable "additional_ingress_rules" {
-  type = list(object({
-    description        = string
-    from_port          = number
-    to_port            = number
-    protocol           = string
-    security_group_ids = list(string)
-  }))
-  default = []
-}
-
 variable "automated_snapshot_retention_period" {
   type        = number
   default     = 1
@@ -36,12 +13,6 @@ variable "cluster_type" {
 variable "database" {
   type        = string
   description = "The name of the first database to be created when the cluster is created"
-}
-
-variable "egress_cidr_blocks" {
-  type        = list(string)
-  default     = []
-  description = "List of CIDR blocks that should be allowed access from the Redshift cluster"
 }
 
 variable "enhanced_vpc_routing" {
@@ -66,11 +37,6 @@ variable "iam_roles" {
   type        = list(string)
   default     = []
   description = "A list of IAM Role ARNs to associate with the cluster"
-}
-
-variable "ingress_cidr_blocks" {
-  type        = list(string)
-  description = "List of CIDR blocks that should be allowed access to the Redshift cluster"
 }
 
 variable "kms_key_arn" {
@@ -140,6 +106,52 @@ variable "redshift_subnet_group" {
   type        = string
   default     = null
   description = "Name of Redshift subnet group the cluster should be attached to"
+}
+
+variable "security_group_egress_rules" {
+  type = list(object({
+    cidr_ipv4                    = optional(string)
+    cidr_ipv6                    = optional(string)
+    description                  = string
+    from_port                    = optional(number)
+    ip_protocol                  = optional(string, "-1")
+    prefix_list_id               = optional(string)
+    referenced_security_group_id = optional(string)
+    to_port                      = optional(number)
+  }))
+  default     = []
+  description = "Security Group egress rules"
+
+  validation {
+    condition     = alltrue([for r in var.security_group_egress_rules : (r.cidr_ipv4 != null || r.cidr_ipv6 != null || r.prefix_list_id != null || r.referenced_security_group_id != null)])
+    error_message = "Although \"cidr_ipv4\", \"cidr_ipv6\", \"prefix_list_id\", and \"referenced_security_group_id\" are all marked as optional, you must provide one of them in order to configure the destination of the traffic."
+  }
+}
+
+variable "security_group_ids" {
+  type        = list(string)
+  default     = []
+  description = "The security group(s) for running the Redshift cluster within the VPC. If not specified a default SG will be created"
+}
+
+variable "security_group_ingress_rules" {
+  type = list(object({
+    cidr_ipv4                    = optional(string)
+    cidr_ipv6                    = optional(string)
+    description                  = string
+    from_port                    = optional(number)
+    ip_protocol                  = optional(string, "-1")
+    prefix_list_id               = optional(string)
+    referenced_security_group_id = optional(string)
+    to_port                      = optional(number)
+  }))
+  default     = []
+  description = "Security Group ingress rules"
+
+  validation {
+    condition     = alltrue([for r in var.security_group_ingress_rules : (r.cidr_ipv4 != null || r.cidr_ipv6 != null || r.prefix_list_id != null || r.referenced_security_group_id != null)])
+    error_message = "Although \"cidr_ipv4\", \"cidr_ipv6\", \"prefix_list_id\", and \"referenced_security_group_id\" are all marked as optional, you must provide one of them in order to configure the destination of the traffic."
+  }
 }
 
 variable "skip_final_snapshot" {
