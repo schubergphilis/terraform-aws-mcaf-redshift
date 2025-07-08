@@ -129,6 +129,7 @@ resource "aws_redshift_cluster" "default" {
   final_snapshot_identifier = var.final_snapshot_identifier
   iam_roles                 = var.iam_roles
   kms_key_id                = var.kms_key_arn
+  maintenance_track_name    = var.maintenance_track_name
   node_type                 = var.node_type
   number_of_nodes           = var.number_of_nodes
   publicly_accessible       = var.publicly_accessible

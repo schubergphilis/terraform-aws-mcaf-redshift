@@ -74,6 +74,12 @@ variable "logging" {
   }
 }
 
+variable "maintenance_track_name" {
+  type        = string
+  default     = "current"
+  description = "The name of the maintenance track to apply to the cluster."
+}
+
 variable "name" {
   type        = string
   description = "The name to identify the cluster by"
