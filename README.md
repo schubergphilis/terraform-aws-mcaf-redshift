@@ -8,19 +8,19 @@ Terraform module to setup and manage an AWS Redshift cluster.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.76.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 6.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.76.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 6.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_logging_bucket"></a> [logging\_bucket](#module\_logging\_bucket) | schubergphilis/mcaf-s3/aws | ~> 1.5 |
+| <a name="module_logging_bucket"></a> [logging\_bucket](#module\_logging\_bucket) | schubergphilis/mcaf-s3/aws | ~> 2.0 |
 
 ## Resources
 
@@ -57,6 +57,7 @@ Terraform module to setup and manage an AWS Redshift cluster.
 | <a name="input_number_of_nodes"></a> [number\_of\_nodes](#input\_number\_of\_nodes) | The number of compute nodes in the cluster | `number` | `1` | no |
 | <a name="input_publicly_accessible"></a> [publicly\_accessible](#input\_publicly\_accessible) | Whether or not the Redshift cluster will be publicly accessible | `bool` | `false` | no |
 | <a name="input_redshift_subnet_group"></a> [redshift\_subnet\_group](#input\_redshift\_subnet\_group) | Name of Redshift subnet group the cluster should be attached to | `string` | `null` | no |
+| <a name="input_region"></a> [region](#input\_region) | The AWS region where resources will be created; if omitted the default provider region is used | `string` | `null` | no |
 | <a name="input_security_group_egress_rules"></a> [security\_group\_egress\_rules](#input\_security\_group\_egress\_rules) | Security Group egress rules | <pre>list(object({<br/>    cidr_ipv4                    = optional(string)<br/>    cidr_ipv6                    = optional(string)<br/>    description                  = string<br/>    from_port                    = optional(number)<br/>    ip_protocol                  = optional(string, "-1")<br/>    prefix_list_id               = optional(string)<br/>    referenced_security_group_id = optional(string)<br/>    to_port                      = optional(number)<br/>  }))</pre> | `[]` | no |
 | <a name="input_security_group_ids"></a> [security\_group\_ids](#input\_security\_group\_ids) | The security group(s) for running the Redshift cluster within the VPC. If not specified a default SG will be created | `list(string)` | `[]` | no |
 | <a name="input_security_group_ingress_rules"></a> [security\_group\_ingress\_rules](#input\_security\_group\_ingress\_rules) | Security Group ingress rules | <pre>list(object({<br/>    cidr_ipv4                    = optional(string)<br/>    cidr_ipv6                    = optional(string)<br/>    description                  = string<br/>    from_port                    = optional(number)<br/>    ip_protocol                  = optional(string, "-1")<br/>    prefix_list_id               = optional(string)<br/>    referenced_security_group_id = optional(string)<br/>    to_port                      = optional(number)<br/>  }))</pre> | `[]` | no |
