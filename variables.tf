@@ -114,6 +114,12 @@ variable "redshift_subnet_group" {
   description = "Name of Redshift subnet group the cluster should be attached to"
 }
 
+variable "region" {
+  type        = string
+  default     = null
+  description = "The AWS region where resources will be created; if omitted the default provider region is used"
+}
+
 variable "security_group_egress_rules" {
   type = list(object({
     cidr_ipv4                    = optional(string)

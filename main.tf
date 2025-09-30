@@ -8,6 +8,7 @@ resource "aws_eip" "default" {
   #checkov:skip=CKV2_AWS_19:The EIP is created conditionally based on the publicly_accessible variable and attached to the cluster
   count = var.publicly_accessible ? 1 : 0
 
+  region = var.region
   domain = "vpc"
   tags   = merge(var.tags, { "Name" = "redshift-${var.name}" })
 }
@@ -16,6 +17,7 @@ resource "aws_security_group" "default" {
   #checkov:skip=CKV2_AWS_5:Security group is conditionally attached to Redshift cluster when no existing security groups are provided
   count = var.subnet_ids != null && length(var.security_group_ids) == 0 ? 1 : 0
 
+  region      = var.region
   name        = "redshift-${var.name}"
   description = "Access to Redshift"
   vpc_id      = var.vpc_id
@@ -25,6 +27,7 @@ resource "aws_security_group" "default" {
 resource "aws_vpc_security_group_egress_rule" "default" {
   for_each = var.subnet_ids != null && length(var.security_group_ids) == 0 && length(var.security_group_egress_rules) != 0 ? { for v in var.security_group_egress_rules : v.description => v } : {}
 
+  region                       = var.region
   cidr_ipv4                    = each.value.cidr_ipv4
   cidr_ipv6                    = each.value.cidr_ipv6
   description                  = each.value.description
@@ -40,6 +43,7 @@ resource "aws_vpc_security_group_egress_rule" "default" {
 resource "aws_vpc_security_group_ingress_rule" "default" {
   for_each = var.subnet_ids != null && length(var.security_group_ids) == 0 && length(var.security_group_ingress_rules) != 0 ? { for v in var.security_group_ingress_rules : v.description => v } : {}
 
+  region                       = var.region
   cidr_ipv4                    = each.value.cidr_ipv4
   cidr_ipv6                    = each.value.cidr_ipv6
   description                  = each.value.description
@@ -55,12 +59,14 @@ resource "aws_vpc_security_group_ingress_rule" "default" {
 resource "aws_redshift_subnet_group" "default" {
   count = var.subnet_ids != null ? 1 : 0
 
+  region     = var.region
   name       = local.subnet_group_name
   subnet_ids = var.subnet_ids
   tags       = var.tags
 }
 
 resource "aws_redshift_parameter_group" "default" {
+  region      = var.region
   name        = var.name
   description = "Hardened security for Redshift Clusters"
   family      = "redshift-1.0"
@@ -101,8 +107,9 @@ module "logging_bucket" {
   count = local.create_logging_bucket ? 1 : 0
 
   source  = "schubergphilis/mcaf-s3/aws"
-  version = "~> 1.5"
+  version = "~> 2.0"
 
+  region         = var.region
   name           = var.logging.bucket_name
   force_destroy  = var.force_destroy
   policy         = data.aws_iam_policy_document.logging[0].json
@@ -113,6 +120,7 @@ module "logging_bucket" {
 
 resource "aws_redshift_cluster" "default" {
   #checkov:skip=CKV_AWS_71: Logging is enabled using the aws_redshift_logging resource
+  region                              = var.region
   cluster_identifier                  = var.name
   database_name                       = var.database
   master_username                     = var.username
@@ -141,6 +149,7 @@ resource "aws_redshift_cluster" "default" {
 resource "aws_redshift_logging" "default" {
   count = var.logging != null ? 1 : 0
 
+  region               = var.region
   cluster_identifier   = aws_redshift_cluster.default.id
   bucket_name          = local.create_logging_bucket ? module.logging_bucket[0].name : var.logging.bucket_name
   log_destination_type = var.logging.log_destination_type
