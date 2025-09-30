@@ -47,7 +47,7 @@ module "redshift" {
 
 module "vpc" {
   source  = "schubergphilis/mcaf-vpc/aws"
-  version = "~> 1.22.0"
+  version = "~> 3.0.0"
 
   name                = "redshift-vpc"
   availability_zones  = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
